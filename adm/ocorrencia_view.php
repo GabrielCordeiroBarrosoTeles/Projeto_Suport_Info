@@ -79,9 +79,10 @@
                                                 <td><?= $dado['data']; ?></td>
                                                 <td>
                                                     <?php 
-                                                        if($dado['estado'] =="Concluido"){echo '<div class="concluido">' .$dado['estado'].'</div>';}
-                                                        else  if($dado['estado'] =="Aberto"){ echo '<div class="aberto">' .$dado['estado'].'</div>';}
-                                                    ?></td>
+                                                        if($dado['estado'] ==1){echo "<div class='concluido'> Concluido</div>";}
+                                                        else  if($dado['estado'] ==0){ echo "<div class='aberto'>Aberto</div>";}
+                                                    ?>
+                                                </td>                   
                                             </tr>
                                             <?php
                                         }
