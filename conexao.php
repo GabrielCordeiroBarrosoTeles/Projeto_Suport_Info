@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <?php
 $host = "localhost";
 $user = "root";
