@@ -23,8 +23,8 @@
             background: red;
             color:white; 
         }
-       
-            ::-webkit-scrollbar{
+        
+    ::-webkit-scrollbar{
                 width: 10px;
             }::-webkit-scrollbar-track{
                 background: #E7DFDD;
@@ -33,6 +33,26 @@
                 background: #000000;
                 border-radius: 30px;
             }
+        .table th, .table td {
+            text-align: center;
+            vertical-align: middle;
+        }
+        .ball {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        .red {
+            background-color: red;
+        }
+        .yellow {
+            background-color: yellow;
+        }
+        .blue {
+            background-color: blue;
+        }
         </style>
 </head>
 <body>
@@ -42,11 +62,10 @@
         <?php include('message.php'); ?>
 
         <div class="row">
-            <div class="col-md-12">
+            <div class="">
                 <div class="card">
                     <div class="card-header">
-                        <h4>Detalhes das ocorrências
-                        </h4>
+                        <h4>Detalhes das ocorrências</h4>
                     </div>
                     <div class="card-body table-responsive">
 
@@ -54,16 +73,22 @@
                             <thead style="align-items: center;text-align: center;">
                                 <tr style="align-items: center;text-align: center;">
                                     <th>ID</th>
-                                    <th>Nome</th>
-                                    <th>OBS</th>
-                                    <th>Departamento</th>
-                                    <th>Estado</th>
+                                    <th>Prioridade</th>
+                                    <th>Nome do Cliente</th>
+                                    <th>Responsavel</th>
                                     <th>Data</th>
+                                    <th>Estado</th>
+                                    <th>Visualizar</th>
                                 </tr>
                             </thead>
                             <tbody style="align-items: center;text-align: center;">
                                 <?php 
-                                    $query = "SELECT * FROM ocorrencia";
+                                    $query = "SELECT o.id, o.prioridade, o.setor, o.data, o.estado, f.nome AS nome_responsavel, c.nome AS cliente_nome
+                                                FROM ocorrencia o
+                                                JOIN funcionarios f ON o.responsavel = f.id
+                                                JOIN cliente c ON o.cliente_id = c.id"; 
+                                                                
+                          
                                     $query_run = mysqli_query($mysqli, $query);
 
                                     if(mysqli_num_rows($query_run) > 0)
@@ -72,17 +97,40 @@
                                         {
                                             ?>
                                             <tr>
-                                                <td><?= $dado['id']; ?></td>
-                                                <td><?= $dado['nome']; ?></td>
-                                                <td><?= $dado['observacao_cliente']; ?></td>
-                                                <td><?= $dado['dep']; ?></td>
-                                                <td><?= $dado['data']; ?></td>
+                                                
+                                                <td><?= $dado['id']; ?></td> <td>
+                                                    <?php 
+                                                    $prioridade = $dado['prioridade'];
+                                                    $colorClass = '';
+                                                    if ($prioridade == 'alta') {
+                                                        $colorClass = 'red';
+                                                    } elseif ($prioridade == 'media') {
+                                                        $colorClass = 'yellow';
+                                                    } elseif ($prioridade == 'baixa') {
+                                                        $colorClass = 'blue';
+                                                    }
+                                                    ?>
+                                                    <div class="ball <?= $colorClass; ?>"></div>
+                                                </td>
+                                                <td><?= $dado['cliente_nome']; ?></td>
+                                                <td><?= htmlspecialchars($dado['nome_responsavel'] ?? "Não definido"); ?></td>
+                                                <td><?= date('d/m/Y', strtotime($dado['data'])); ?></td>
                                                 <td>
                                                     <?php 
-                                                        if($dado['estado'] ==1){echo "<div class='concluido'> Concluido</div>";}
-                                                        else  if($dado['estado'] ==0){ echo "<div class='aberto'>Aberto</div>";}
+                                                        if($dado['estado'] == 'concluido'){echo "<div class='concluido'>Concluído</div>";}
+                                                        else  if($dado['estado'] == 'aberto'){ echo "<div class='aberto'>Aberto</div>";}
                                                     ?>
-                                                </td>                   
+                                                </td>
+                                                <td>
+                                                    <a href="ocor_view.php?id=<?= $dado['id']; ?>">
+                                                        <button type="button" class="btn btn-primary" >
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill text-light" viewBox="0 0 16 16">
+                                                                <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                                                                <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+                                                            </svg>
+                                                        </button>
+                                                    </a>                                               
+                                                </td>
                                             </tr>
                                             <?php
                                         }

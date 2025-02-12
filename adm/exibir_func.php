@@ -49,7 +49,7 @@
                                     <th>CPF</th>
                                     <th>Email</th>
                                     <th>Setor</th>
-                                    <th>Departamento</th>
+                                    <th>QTD de ocorrencia</th>
                                     <th>Visualizar</th>
                                     <th>Editar</th>
                                     <th>Deletar</th>
@@ -72,7 +72,19 @@
                                                 <td><?= $support['cpf']; ?></td>
                                                 <td><?= $support['email']; ?></td>
                                                 <td><?= $support['setor']; ?></td>
-                                                <td><?= $support['departamento']; ?></td>
+                                                <td>
+                                                    <?php
+                                                        $func_id = $support['id'];
+                                                        $ocorrencia_query = "SELECT COUNT(*) as ocorrencia_count 
+                                                                             FROM ocorrencia 
+                                                                             WHERE responsavel = $func_id 
+                                                                             AND estado = 'aberto'";
+                                                        
+                                                        $ocorrencia_result = mysqli_query($mysqli, $ocorrencia_query);
+                                                        $ocorrencia_data = mysqli_fetch_assoc($ocorrencia_result);
+                                                        echo $ocorrencia_data['ocorrencia_count'];
+                                                    ?>
+                                                </td>
                                                 <td>
                                                     <a href="func_view.php?id=<?= $support['id']; ?>" class="btn btn-info btn-sm">Visualizar</a>
                                                 </td>

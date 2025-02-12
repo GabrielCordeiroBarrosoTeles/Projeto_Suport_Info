@@ -64,9 +64,7 @@
             <div class="">
                 <div class="card">
                     <div class="card-header">
-                        <h4>Detalhes do cliente
-                            
-                        </h4>
+                        <h4>Detalhes das ocorrências</h4>
                     </div>
                     <div class="card-body table-responsive">
 
@@ -83,32 +81,34 @@
                                 </tr>
                             </thead>
                             <tbody style="align-items: center;text-align: center;">
-                                <?php 
-                                    $query = "SELECT * FROM ocorrencia";
-                                    $query_run = mysqli_query($mysqli, $query);
+                            <?php 
+                                $query = "SELECT o.id, o.prioridade, o.responsavel,o.setor,o.data,o.estado, c.nome AS cliente_nome
+                                            FROM ocorrencia o
+                                            JOIN cliente c ON o.cliente_id = c.id";  
+                                $query_run = mysqli_query($mysqli, $query);
 
-                                    if(mysqli_num_rows($query_run) > 0)
+                                if(mysqli_num_rows($query_run) > 0)
+                                {
+                                    foreach($query_run as $dado)
                                     {
-                                        foreach($query_run as $dado)
-                                        {
-                                            ?>
-                                            <tr>
-                                                
-                                                <td><?= $dado['id']; ?></td> <td>
-                                                    <?php 
-                                                    $prioridade = $dado['prioridade'];
-                                                    $colorClass = '';
-                                                    if ($prioridade == 'alta') {
-                                                        $colorClass = 'red';
-                                                    } elseif ($prioridade == 'media') {
-                                                        $colorClass = 'yellow';
-                                                    } elseif ($prioridade == 'baixa') {
-                                                        $colorClass = 'blue';
-                                                    }
-                                                    ?>
-                                                    <div class="ball <?= $colorClass; ?>"></div>
-                                                </td>
-                                                <td><?= $dado['nome']; ?></td>
+                                        ?>
+                                        <tr>
+                                            <td><?= $dado['id']; ?></td> 
+                                            <td>
+                                                <?php 
+                                                $prioridade = $dado['prioridade'];
+                                                $colorClass = '';
+                                                if ($prioridade == 'alta') {
+                                                    $colorClass = 'red';
+                                                } elseif ($prioridade == 'media') {
+                                                    $colorClass = 'yellow';
+                                                } elseif ($prioridade == 'baixa') {
+                                                    $colorClass = 'blue';
+                                                }
+                                                ?>
+                                                <div class="ball <?= $colorClass; ?>"></div>
+                                            </td>
+                                            <td><?= $dado['cliente_nome']; ?></td>
                                                 <td><?= $dado['setor']; ?></td>
                                                 <td><?= date('d/m/Y', strtotime($dado['data'])); ?></td>
                                                 <td>
@@ -152,49 +152,3 @@
     <!--Termino Datatables-->
 </body>
 </html>
-
-<div class="col-12">
-    <label for="userName" class="form-label">Descreva o problema:</label>
-    <input type="textarea" class="form-control" name="observacao_cliente" id="userName" aria-describedby="emailHelp">
-</div>
-
-<div class="col-12">
-    <label for="userName" class="form-label">Data de registro:</label>
-    <input type="date" class="form-control" name="data" id="userName" aria-describedby="emailHelp">
-</div>
-
-<?php
-// Conectar ao banco de dados (substitua com as informações reais do seu banco)
-$mysqli = new mysqli("localhost", "root", "", "cordeiro");
-
-// Verifica se a conexão foi bem-sucedida
-if ($mysqli->connect_error) {
-    die("Falha na conexão: " . $mysqli->connect_error);
-}
-
-// Consulta SQL para selecionar os funcionários do setor 'Suporte'
-$query = "SELECT * FROM funcionarios WHERE setor = 'Suporte'";
-$query_run = mysqli_query($mysqli, $query);
-
-// Verifica se há resultados para popular o select
-if (mysqli_num_rows($query_run) > 0) {
-    // Preenche o select com as opções de funcionários do setor Suporte
-    echo '<div class="inputBox">';
-    echo '<label for="inputState" class="form-label">Funcionário (Setor: Suporte):</label>';
-    echo '<select id="inputState" class="input" name="responsavel">';
-    echo '<option selected disabled>Selecione</option>';
-    
-    while ($funcionario = mysqli_fetch_assoc($query_run)) {
-        echo '<option value="' . $funcionario['id'] . '">' . $funcionario['nome'] . '</option>';
-    }
-
-    echo '</select>';
-    echo '<br>';
-    echo '</div>';
-} else {
-    echo '<p>Nenhum funcionário encontrado no setor "Suporte".</p>';
-}
-
-// Fecha a conexão com o banco de dados
-$mysqli->close();
-?>
