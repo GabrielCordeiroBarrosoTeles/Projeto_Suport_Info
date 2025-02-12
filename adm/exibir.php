@@ -68,7 +68,7 @@
                                             <tr>
                                                 <td><?= $support['id']; ?></td>
                                                 <td><?= $support['nome']; ?></td>
-                                                <td><?= $support['cpf']; ?></td>
+                                                <td><?= preg_replace("/(\d{3})(\d{3})(\d{3})(\d{2})/", "$1.$2.$3-$4", $support['cpf']); ?></td>
                                                 <td>
                                                     <a href="cliente-view.php?id=<?= $support['id']; ?>" class="btn btn-info btn-sm">Visualizar</a>
                                                 </td>

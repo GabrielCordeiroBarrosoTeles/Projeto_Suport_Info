@@ -28,7 +28,7 @@ require 'dbcon.php';
     <title>Detalhes do Funcionario</title>
 </head>
 <body>
-
+<?php include './includes/navbar_modal.php'?><!--Navbar-->
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-12">

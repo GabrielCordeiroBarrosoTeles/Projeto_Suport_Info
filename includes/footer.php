@@ -87,9 +87,6 @@ input.form-control {
             <a class="nav-link" href="index.php">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="pesq_cliente.php">Exibir</a>
-          </li>
-          <li class="nav-item">
                     <a class="nav-link"  data-bs-toggle="modal" data-bs-target="#exampleModal6"  aria-hidden="true">Agendamento</a>
                 </li>
           <li class="nav-item">

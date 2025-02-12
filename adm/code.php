@@ -103,9 +103,28 @@ if (isset($_POST['save_func'])) {
     $cpf = mysqli_real_escape_string($mysqli, $_POST['cpf']);
     $email = mysqli_real_escape_string($mysqli, $_POST['email']);
     $setor = mysqli_real_escape_string($mysqli, $_POST['setor']);
-    $departamento = mysqli_real_escape_string($mysqli, $_POST['departamento']);
+    $usuario = mysqli_real_escape_string($mysqli, $_POST['usuario']);
 
-    $query = "INSERT INTO funcionarios (nome,cpf,email,setor,departamento) VALUES ('$nome','$cpf','$email','$setor','$departamento')";
+    $query = "INSERT INTO funcionarios (nome,cpf,email,setor,usuario_id) VALUES ('$nome','$cpf','$email','$setor','$usuario')";
+
+    $query_run = mysqli_query($mysqli, $query);
+    if ($query_run) {
+        $_SESSION['message'] = "funcionário cadastrado com sucesso!";
+        header("Location: home.php");
+        exit(0);
+    } else {
+        $_SESSION['message'] = "funcionário não cadastrado";
+        header("Location: home.php");
+        exit(0);
+    }
+}
+
+if (isset($_POST['save_login'])) {
+    $login = mysqli_real_escape_string($mysqli, $_POST['login']);
+    $senha = mysqli_real_escape_string($mysqli, $_POST['senha']);
+
+
+    $query = "INSERT INTO usuario (login,senha) VALUES ('$login','$senha')";
 
     $query_run = mysqli_query($mysqli, $query);
     if ($query_run) {

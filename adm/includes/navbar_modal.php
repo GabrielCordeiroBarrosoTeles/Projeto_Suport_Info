@@ -113,6 +113,9 @@
                     <a class="nav-link" data-bs-toggle="modal" data-bs-target="#exampleModal2"  aria-hidden="true">Cadastro Funcionario</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="modal" data-bs-target="#exampleModal3"  aria-hidden="true">Cadastro de Usuario</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="exibir.php">Exibir Cliente</a>
                 </li>
                 <li class="nav-item">
@@ -143,7 +146,40 @@
                     </div>
                     <div class="mb-3">
                         <label for="cpf" class="form-label">CPF</label>
-                        <input type="number" name="cpf" id="cpf" class="form-control" required>
+                        <input type="text" name="cpf" id="cpf" class="form-control" required>
+                        <script>
+                            // Mascara CPF
+                            document.addEventListener('DOMContentLoaded', function() {
+                                var cpfInput = document.getElementById('cpf');
+                                cpfInput.addEventListener('input', function(e) {
+                                    var value = e.target.value.replace(/\D/g, '');
+                                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                                    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                                    e.target.value = value;
+                                });
+                            });
+                        </script>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email:</label>
+                        <input type="email" name="email" id="email" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="telefone" class="form-label">Telefone:</label>
+                        <input type="tel" name="telefone" id="telefone" class="form-control" required>
+                        <script>
+                            // Mascara Telefone
+                            document.addEventListener('DOMContentLoaded', function() {
+                                var telefoneInput = document.getElementById('telefone');
+                                telefoneInput.addEventListener('input', function(e) {
+                                    var value = e.target.value.replace(/\D/g, '');
+                                    value = value.replace(/^(\d{2})(\d)/g, '($1) $2');
+                                    value = value.replace(/(\d)(\d{4})$/, '$1-$2');
+                                    e.target.value = value;
+                                });
+                            });
+                        </script>
                     </div>
                     <div class="d-grid gap-2">
                         <button type="submit" name="save_cliente" class="btn btn-primary submit">Enviar</button>
@@ -153,10 +189,6 @@
         </div>
     </div>
 </div>
-
-
-
-
 
 
     <!-- Modal Cadastro de Funcionario -->
@@ -173,7 +205,20 @@
       </div>
       <div class="form-group">
         <label for="telefone">Cpf:</label>
-        <input type="text" class="form-control" id="cpf" name="cpf" placeholder="Digite o cpf">
+        <input type="text" class="form-control" id="cpf_func" name="cpf" placeholder="Digite o cpf">
+        <script>
+            // Mascara CPF
+            document.addEventListener('DOMContentLoaded', function() {
+                var cpfInput = document.getElementById('cpf_func');
+                cpfInput.addEventListener('input', function(e) {
+                    var value = e.target.value.replace(/\D/g, '');
+                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                    e.target.value = value;
+                });
+            });
+        </script>
       </div>
       <div class="form-group">
         <label for="email">E-mail:</label>
@@ -184,8 +229,35 @@
         <input type="text" class="form-control" id="setor" name="setor"placeholder="Digite o setor">
       </div>
       <div class="form-group">
-        <label for="cidade">Departamento:</label>
-        <input type="text" class="form-control" id="departamento" name="departamento" placeholder="Digite o departamento">
+        <label for="cidade">Usuario:</label>
+        <select class="form-control" id="usuario" name="usuario">
+            <?php
+            // Conexão com o banco de dados
+            $conn = new mysqli("localhost", "root", "", "cordeiro");
+
+            // Verifica a conexão
+            if ($conn->connect_error) {
+                die("Falha na conexão: " . $conn->connect_error);
+            }
+
+            // Consulta para buscar os logins da tabela usuario que não estão atrelados à tabela funcionario
+            $sql = "SELECT u.id, u.login FROM usuario u LEFT JOIN funcionarios f ON u.id = f.usuario_id WHERE f.usuario_id IS NULL";
+            $result = $conn->query($sql);
+
+            // Verifica se há resultados
+            if ($result->num_rows > 0) {
+                // Loop pelos resultados e cria as opções do select
+                while ($row = $result->fetch_assoc()) {
+                    echo "<option value='" . $row['id'] . "'>" . $row['login'] . "</option>";
+                }
+            } else {
+                echo "<option value=''>Nenhum usuário disponível</option>";
+            }
+
+            // Fecha a conexão
+            $conn->close();
+            ?>
+        </select>
       </div>
       <div style="text-align:center;">
       <br>
@@ -201,10 +273,46 @@
         </div>
     </div>   
 
-   
+    <!-- Modal Cadastro de Usuario -->
+    <div class="modal fade" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-body p-0">
+            <div class="container">
+    <h1 style="text-align:center;">Cadastro de Usuario</h1>
+    <form  action="code.php" method="post">
+      <div class="form-group">
+        <label for="login">Login:</label>
+        <input type="text" class="form-control" id="login" name="login" placeholder="Digite o seu login">
+      </div>
+      <div class="form-group">
+        <label for="senha">Senha:</label>
+        <input type="password" class="form-control" id="senha" name="senha" placeholder="Digite a senha" required>
+        <script>
+            // Mascara Senha
+            document.addEventListener('DOMContentLoaded', function() {
+                var senhaInput = document.getElementById('senha');
+                senhaInput.addEventListener('input', function(e) {
+                    var value = e.target.value.replace(/\D/g, '');
+                    e.target.value = value;
+                });
+            });
+        </script>
+      </div>
 
+      <div style="text-align:center;">
+      <br>
+        <button type="submit"  name="save_login" class="btn btn-primary">Enviar</button>
+      </div>
+      
+      <br>
+    </form>
+  </div>
 
-
+                </div>
+            </div>
+        </div>
+    </div>   
 
 
 

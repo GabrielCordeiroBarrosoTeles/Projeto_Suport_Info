@@ -29,7 +29,7 @@ require 'dbcon.php';
     <title>Funcionario Edit</title>
 </head>
 <body>
-  
+<?php include './includes/navbar_modal.php'?><!--Navbar-->
     <div class="container mt-5">
 
         <?php include('message.php'); ?>
@@ -59,24 +59,36 @@ require 'dbcon.php';
                                     <input type="hidden" name="support_id" value="<?= $support['id']; ?>">
 
                                     <div class="mb-3">
-                                        <label>Nome</label>
+                                        <label>Nome:</label>
                                         <input type="text" name="nome" value="<?=$support['nome'];?>" class="form-control">
                                     </div>
                                     <div class="mb-3">
-                                        <label>cpf</label>
+                                        <label>CPF:</label>
                                         <input type="text" name="cpf" value="<?=$support['cpf'];?>" class="form-control">
                                     </div>
                                     <div class="mb-3">
-                                        <label>email</label>
+                                        <label>Email:</label>
                                         <input type="text" name="email" value="<?=$support['email'];?>" class="form-control">
                                     </div>
                                     <div class="mb-3">
-                                        <label>setor</label>
+                                        <label>Setor:</label>
                                         <input type="text" name="setor" value="<?=$support['setor'];?>" class="form-control">
                                     </div>
                                     <div class="mb-3">
-                                        <label>departamento</label>
-                                        <input type="text" name="departamento" value="<?=$support['departamento'];?>" class="form-control">
+                                        <label>Quantidade de ocorrências em aberto para esse funcionário:</label>
+                                        <div class="form-control" style="background-color: #e9ecef;" readonly>
+                                            <?php
+                                                $func_id = $support['id'];
+                                                $ocorrencia_query = "SELECT COUNT(*) as ocorrencia_count 
+                                                                     FROM ocorrencia 
+                                                                     WHERE responsavel = $func_id 
+                                                                     AND estado = 'aberto'";
+                                                
+                                                $ocorrencia_result = mysqli_query($mysqli, $ocorrencia_query);
+                                                $ocorrencia_data = mysqli_fetch_assoc($ocorrencia_result);
+                                                echo $ocorrencia_data['ocorrencia_count'];
+                                            ?>
+                                        </div>
                                     </div>
                                    
                                     <div class="mb-3">
